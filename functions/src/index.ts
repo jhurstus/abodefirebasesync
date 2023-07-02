@@ -2,6 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { initializeApp } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
+import * as admin from "firebase-admin";
 
 // Writes incoming Abode webhook to realtime database.
 export default onRequest(
@@ -18,7 +19,9 @@ export default onRequest(
       }
 
       if (typeof isArmed == "boolean") {
-        initializeApp();
+        if (admin.apps.length === 0) {
+          initializeApp();
+        }
         getDatabase().ref("home/isArmed").set(isArmed);
       }
 
