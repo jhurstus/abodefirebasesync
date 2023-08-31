@@ -1,5 +1,4 @@
 import { onRequest } from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
 import { initializeApp } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
 import * as admin from "firebase-admin";
@@ -26,7 +25,20 @@ export default onRequest(
       }
 
     }
-    // TODO: remove log after finished prod testing.
-    logger.log(JSON.stringify(req.query), { q: req.query });
+
+    if (req.query["doorName"] === "garage door") {
+      let isOpen: boolean | undefined = undefined;
+      if (req.query["opened"] === "1") {
+        isOpen = true;
+      } else if (req.query["closed"] === "true") {
+        isOpen = false;
+      }
+      if (typeof isOpen == "boolean") {
+        if (admin.apps.length === 0) {
+          initializeApp();
+        }
+        getDatabase().ref("home/isGarageOpen").set(isOpen);
+      }
+    }
     res.status(200).send("Ack");
   });
