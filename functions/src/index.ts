@@ -12,9 +12,9 @@ export default onRequest(
       const newMode = req.query["newMode"];
 
       let isArmed: boolean | undefined = undefined;
-      if (newMode == "Gateway Disarmed - Standby") {
+      if (newMode.includes("Standby")) {
         isArmed = false;
-      } else if (newMode == "Gateway Armed - Home") {
+      } else if (newMode.includes("Home")) {
         isArmed = true;
       }
 
